@@ -1,13 +1,14 @@
 cwd  := $(shell pwd)
 
-all:
-	xcodebuild
+all: build
 	# make install - to quickly install in root without using the installer package
 	# make pkg     - to make build/USB-CDC-Drivers.pkg
 	# make clean   - to delete build and /tmp/AppleUSBCDC.dst
 
-install:
+build:
 	xcodebuild
+
+install: build
 	sudo xcodebuild -buildstyle Deployment install DSTROOT=/
 	# clean up root-owned files in build
 	sudo rm -rf build
@@ -22,10 +23,10 @@ install:
 	sudo rm -rf /System/Library/Extensions.kextcache
 	sudo rm -rf /System/Library/Extensions.mkext
 
-pkg:
-	( cd Package; make )
+pkg: build
+	$(MAKE) -C Package
 
 clean:
-	( cd Package ; make clean )
+	$(MAKE) -C Package clean
 	rm -rf build
 
